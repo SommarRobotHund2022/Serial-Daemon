@@ -11,8 +11,11 @@ import sys
 import zmq
 
 context = zmq.Context()
-zmq_sock = context.socket(zmq.PUB)
-zmq_sock.bind("tcp://127.0.0.1:2271")
+pub_sock = context.socket(zmq.PUB)
+pub_sock.bind("tcp://127.0.0.1:2271")
+
+rep_sock = context.socket(zmq.REP)
+rep_sock.bind("tcp://127.0.0.1:2272")
 
 BAUDRATE = 115200
 TIMEOUT = 1
@@ -164,7 +167,18 @@ class OpenCatSerialConnection:
 def pub_read_queue(conn: OpenCatSerialConnection):
     while True:
         if not conn.read_queue.empty():
-            zmq_sock.send_string(conn.read_queue.get())
+            pub_sock.send_string(conn.read_queue.get())
+#pub_read_queue
+
+def recv_write_queue(conn: OpenCatSerialConnection):
+    while True:
+        try:
+            conn.queue_task(rep_sock.recv().decode('utf-8'))
+            print('command recv')
+        except:
+            rep_sock.send_string('failure')
+        finally:
+            rep_sock.send_string('success')
 #pub_read_queue
 
 if __name__ == '__main__':
@@ -172,7 +186,9 @@ if __name__ == '__main__':
         print('start')
         sc = OpenCatSerialConnection()
         t1 = threading.Thread(target=pub_read_queue, args=(sc,), daemon=True)
+        t2 = threading.Thread(target=recv_write_queue, args=(sc,), daemon=True)
         t1.start()
+        t2.start()
         while True:
             x = input('')
             sc.queue_task(x)

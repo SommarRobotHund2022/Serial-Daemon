@@ -1,0 +1,11 @@
+[Unit]
+Name=Bittle Serial Daemon
+Description=Foo
+After=syslog.target network.target
+
+[Service]
+WorkingDirectory=/home/sommarjobbare/serial/
+ExecStart=/usr/bin/python3 daemon.py
+
+[Install]
+WantedBy=multi-user.target

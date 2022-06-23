@@ -90,22 +90,24 @@ class OpenCatSerialConnection:
     def __wq_worker(self):
         while not self.__stop_bkw_event.is_set():
             time.sleep(0.01)
+            
             self.stats['w_cycles'] += 1
+            
             if self.write_queue.empty():
                 continue
-
+                
+            task = self.write_queue.get()
+            
             self.__wire_lock.acquire()
             try:
-                self.serial_to_port.write(self.write_queue.get().encode(self.__encoding))
-
-                pass
+                self.serial_to_port.write(task.encode(self.__encoding))
+                
             finally:
                 self.__wire_lock.release()
-
-            task = self.write_queue.get()
             
             if task[0] in TOKENS:
                     self.__aq.put(task[0])
+                    
             log_d('SEND TASK: ', task)
     # __wq_worker
 

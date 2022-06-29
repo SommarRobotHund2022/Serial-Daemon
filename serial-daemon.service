@@ -1,11 +1,10 @@
 [Unit]
-Name=Bittle Serial Daemon
-Description=Foo
+Description=Serial comm. daemon for OpenCat devices.
 After=syslog.target network.target
 
 [Service]
-WorkingDirectory=/home/sommarjobbare/serial/
-ExecStart=/usr/bin/python3 daemon.py
+WorkingDirectory=/home/sommarjobbare/Serial-Daemon/
+ExecStart=/usr/bin/python daemon.py
 
 [Install]
 WantedBy=multi-user.target

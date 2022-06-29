@@ -3,7 +3,6 @@
 # autopep8 -i
 
 import serial
-import serial.tools.list_ports
 import queue
 import threading
 import time
@@ -21,8 +20,17 @@ BAUDRATE = 115200
 TIMEOUT = 1
 
 
-DEBUG_MODE = ('--debug' in sys.argv) | False
-DO_ECHO = ('--echo' in sys.argv) | False
+DEBUG_MODE = ('--debug' in sys.argv or '-d' in sys.argv) | False
+DO_ECHO = ('--echo' in sys.argv or '-e' in sys.argv) | False
+INTERACTIVE = ('--interactive' in sys.argv or '-i' in sys.argv) | False
+
+PORT = ''
+if '--port' in sys.argv:
+    i = sys.argv.index('--port') + 1
+    try:
+        PORT = sys.argv[i]
+    except:
+        PORT = '/dev/ttyS0'
 
 TOKENS = ['k', 'c', 'm', 'M', 'u', 'b', 'h', 'j', 'd', 'p', 'g', 'a', 's', 'r']
 
@@ -40,7 +48,7 @@ def log_d(*s, t='I'):
 
 
 class OpenCatSerialConnection:
-    def __init__(self, port='/dev/ttyUSB0', max_read_buffer=0, encoding='utf-8', baud=BAUDRATE):
+    def __init__(self, port=PORT, max_read_buffer=0, encoding='utf-8', baud=BAUDRATE):
         self.__timeout = TIMEOUT
         self.__serial_to_port = None
         self.__baud = baud
@@ -186,14 +194,24 @@ def recv_write_queue(conn: OpenCatSerialConnection):
 if __name__ == '__main__':
     try:
         print('start')
-        sc = OpenCatSerialConnection()
+        
+        sc = None
+        try:
+            sc = OpenCatSerialConnection()
+        except:
+            print('Not OpenCat found on', PORT)
+            exit(1)
+            
         t1 = threading.Thread(target=pub_read_queue, args=(sc,), daemon=True)
         t2 = threading.Thread(target=recv_write_queue, args=(sc,), daemon=True)
         t1.start()
         t2.start()
         while True:
-            x = input('')
-            sc.queue_task(x)
+            if INTERACTIVE:
+                x = input('')
+                sc.queue_task(x)
+            else: 
+                pass
     except KeyboardInterrupt:
         del sc
         print('\n\nstop')

@@ -14,7 +14,7 @@ TOKENS = ['k', 'c', 'm', 'M', 'u', 'b', 'h', 'j', 'd', 'p', 'g', 'a', 's', 'r']
 
 
 class OpenCatSerialConnection:
-    def __init__(self, port, max_read_buffer=0, encoding='utf-8', baud=BAUDRATE,timeout=TIMEOUT):
+    def __init__(self, port, max_read_buffer=0, encoding='ISO-8859-1', baud=BAUDRATE,timeout=TIMEOUT):
         
         self.__serial_port = serial.Serial(port, baud, timeout=timeout)
             
@@ -62,9 +62,14 @@ class OpenCatSerialConnection:
             
             if self.write_queue.empty():
                 continue
-                
-            task = self.write_queue.get()
             
+
+            task = self.write_queue.get()
+            if task.strip() == '':
+                log_d("Empty command", t='W ')
+                continue
+
+            task += "\n"
             #self.__wire_lock.acquire()
             try:
                 self.__serial_port.write(task.encode(self.__encoding))

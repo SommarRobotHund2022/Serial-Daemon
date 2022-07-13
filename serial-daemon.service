@@ -4,7 +4,7 @@ After=syslog.target network.target
 
 [Service]
 WorkingDirectory=/home/sommarjobbare/Serial-Daemon/
-ExecStart=/usr/bin/python daemon.py
+ExecStart=/usr/bin/python3 daemon.py
 
 [Install]
 WantedBy=multi-user.target

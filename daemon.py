@@ -23,7 +23,7 @@ else:
 if not NO_NETWORK:
     context = zmq.Context()
     pub_sock = context.socket(zmq.PUB)
-    pub_sock.connect("tcp://192.168.137.1:2271")
+    pub_sock.bind("tcp://192.168.137.71:2271")
 
     rep_sock = context.socket(zmq.REP)
     rep_sock.bind("tcp://127.0.0.1:2272")

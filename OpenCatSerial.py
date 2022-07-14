@@ -118,7 +118,8 @@ class OpenCatSerialConnection:
                 else:
                     self.stats['ack_failed'] += 1
                     log(f'ACK failure! got {res}, expected {ack}', t='W')
-            else:    
+            else:
+                res = "D1: " + res
                 self.read_queue.put(res)
     # __rq_worker
 

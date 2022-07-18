@@ -11,7 +11,7 @@ $ sudo git clone https://github.com/SommarRobotHund2022/Serial-Daemon.git
 $ cd Serial-Daemon
 $ sudo cp serial-daemon.service /etc/systemd/system/
 $ sudo systemctl enable serial-daemon
-$ sudo sstemctl start serial-daemon
+$ sudo systemctl start serial-daemon
 ```
 ### Auto
 ```

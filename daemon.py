@@ -6,6 +6,7 @@ import threading
 import sys
 import zmq
 from OpenCatSerial import *
+from ..AutoPi.piserver import socket
 
 
 INTERACTIVE = ('--interactive' in sys.argv or '-i' in sys.argv) | False
@@ -23,10 +24,10 @@ else:
 if not NO_NETWORK:
     context = zmq.Context()
     pub_sock = context.socket(zmq.PUB)
-    pub_sock.connect("tcp://192.168.137.1:2275")
+    pub_sock.connect(socket['socket'] + '2275')
 
     rep_sock = context.socket(zmq.REP)
-    rep_sock.bind("tcp://127.0.0.1:2272")
+    rep_sock.bind("tcp://127.0.0.1:2272") #Should be localhost address!
 
 
 

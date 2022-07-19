@@ -1,9 +1,12 @@
+from cmath import pi
+from xml.etree.ElementTree import PI
 import serial
 import queue
 import threading
 import time
 import sys
 from logging import *
+from ..AutoPi.piserver import dog
 
 DO_ECHO = ('--echo' in sys.argv or '-e' in sys.argv)            | False
 
@@ -119,7 +122,7 @@ class OpenCatSerialConnection:
                     self.stats['ack_failed'] += 1
                     log(f'ACK failure! got {res}, expected {ack}', t='W')
             else:
-                res = "D1: " + res
+                res = dog['dog'] + " " + res
                 self.read_queue.put(res)
     # __rq_worker
 

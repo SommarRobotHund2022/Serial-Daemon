@@ -6,7 +6,6 @@ import threading
 import sys
 import zmq
 from OpenCatSerial import *
-from ..AutoPi.piserver import socket
 
 
 INTERACTIVE = ('--interactive' in sys.argv or '-i' in sys.argv) | False

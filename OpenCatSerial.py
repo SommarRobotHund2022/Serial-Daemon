@@ -6,7 +6,7 @@ import threading
 import time
 import sys
 from logging import *
-from ..AutoPi.piserver import dog
+import configparser
 
 DO_ECHO = ('--echo' in sys.argv or '-e' in sys.argv)            | False
 
@@ -15,6 +15,10 @@ TIMEOUT = 1
 
 TOKENS = ['k', 'c', 'm', 'M', 'u', 'b', 'h', 'j', 'd', 'p', 'g', 'a', 's', 'r']
 
+config = configparser.ConfigParser()
+config.read("../AutoPi/config.ini")
+dog = config['DOG_TO_USE']
+socket = config['SOCKET']
 
 class OpenCatSerialConnection:
     def __init__(self, port, max_read_buffer=0, encoding='ISO-8859-1', baud=BAUDRATE,timeout=TIMEOUT):
